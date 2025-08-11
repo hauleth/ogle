@@ -9,7 +9,6 @@ defmodule Ogle.MixProject do
       version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
       deps: deps(),
       docs: docs(),
       description: description(),
@@ -25,12 +24,6 @@ defmodule Ogle.MixProject do
   def application do
     [
       extra_applications: [:logger]
-    ]
-  end
-
-  defp aliases do
-    [
-      compile: ["format", "compile"]
     ]
   end
 
