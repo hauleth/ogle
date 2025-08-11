@@ -1,4 +1,4 @@
-defmodule Peep.Buckets do
+defmodule Ogle.Buckets do
   @moduledoc """
   A behavior for histogram bucketing strategies.
 
@@ -11,7 +11,7 @@ defmodule Peep.Buckets do
         tags: [],
         unit: {:native, :millisecond},
         reporter_options: [
-          peep_bucket_calculator: Peep.Buckets.PowersOfTen
+          ogle_bucket_calculator: Ogle.Buckets.PowersOfTen
         ]
       )
     ]
@@ -20,25 +20,25 @@ defmodule Peep.Buckets do
 
   If no bucketing strategy is provided is not set in :reporter_options for a
   `%Telemetry.Metrics.Distribution{}`, then the default is
-  `Peep.Buckets.Exponential`.
+  `Ogle.Buckets.Exponential`.
 
   You can change the default bucket calculator, set `:bucket_calculator` in your
   config.
 
   ```elixir
-  config :peep, bucket_calculator: Peep.Buckets.PowersOfTen
+  config :ogle, bucket_calculator: Ogle.Buckets.PowersOfTen
   ```
 
   ## Custom Buckets
 
-  If you want custom bucket boundaries, there is `Peep.Buckets.Custom`, which
+  If you want custom bucket boundaries, there is `Ogle.Buckets.Custom`, which
   uses pattern matching to assign sample measurements to buckets.
 
   Example:
 
   ```elixir
   defmodule MyApp.MyBucket do
-    use Peep.Buckets.Custom,
+    use Ogle.Buckets.Custom,
       buckets: [10, 100, 1_000]
   end
   ```
@@ -47,12 +47,12 @@ defmodule Peep.Buckets do
   alias Telemetry.Metrics
 
   @default_module Application.compile_env(
-                    :peep,
+                    :ogle,
                     :bucket_calculator,
-                    Peep.Buckets.Exponential
+                    Ogle.Buckets.Exponential
                   )
 
-  @reporter_option :peep_bucket_calculator
+  @reporter_option :ogle_bucket_calculator
 
   @type config :: map
 

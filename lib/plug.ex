@@ -1,21 +1,21 @@
 if Code.ensure_loaded?(Plug) do
-  defmodule Peep.Plug do
+  defmodule Ogle.Plug do
     @moduledoc """
     Use this plug to expose your metrics on an endpoint for scraping. This is useful if you are using Prometheus.
 
     This plug accepts the following options:
 
-    * `:peep_worker` - The name of the Peep worker to use. This is required.
+    * `:ogle_worker` - The name of the Ogle worker to use. This is required.
     * `:path` - The path to expose the metrics on. Defaults to `"/metrics"`.
     * `:on_unmatched_path` - The intended behavior of this plug when handling a
       request to a different path. There are two possible values:
         - `:continue` (default) - This allows for subsequent Plugs in a router to
-          be executed. This option is useful when Peep.Plug is part of a router
+          be executed. This option is useful when Ogle.Plug is part of a router
           for a Phoenix application, or a router that matches other paths after
-          Peep.Plug.
+          Ogle.Plug.
 
         - `:halt` - Responds to requests with 404. This option is useful when
-          Peep.Plug is used for serving metrics on a separate port, which is a
+          Ogle.Plug is used for serving metrics on a separate port, which is a
           practice that is encouraged by other libraries that export Prometheus
           metrics.
 
@@ -24,19 +24,19 @@ if Code.ensure_loaded?(Plug) do
     You can use this plug in your Phoenix endpoint like this:
 
       ```elixir
-      plug Peep.Plug, peep_worker: :my_peep_worker
+      plug Ogle.Plug, ogle_worker: :my_ogle_worker
       ```
 
     Or if you'd rather use a different path:
 
       ```elixir
-      plug Peep.Plug, path: "/my-metrics"
+      plug Ogle.Plug, path: "/my-metrics"
       ```
 
     If you are not using Phoenix, you can use it directly with Cowboy by adding this to your applications's supervision tree:
 
       ```elixir
-      {Plug.Cowboy, scheme: :http, plug: Peep.Plug, options: [port: 9000]}
+      {Plug.Cowboy, scheme: :http, plug: Ogle.Plug, options: [port: 9000]}
       ```
 
     Similarly, if you are using Bandit, you can use it like so:
@@ -44,7 +44,7 @@ if Code.ensure_loaded?(Plug) do
       ```elixir
       {Bandit, [
         scheme: :http,
-        plug: {Peep.Plug, peep_worker: :my_app},
+        plug: {Ogle.Plug, ogle_worker: :my_app},
         port: 9000
       ]}
       ```
@@ -62,7 +62,7 @@ if Code.ensure_loaded?(Plug) do
     def init(opts) do
       %{
         metrics_path: Keyword.get(opts, :path, @default_metrics_path),
-        peep_worker: Keyword.fetch!(opts, :peep_worker),
+        ogle_worker: Keyword.fetch!(opts, :ogle_worker),
         on_unmatched_path: Keyword.get(opts, :on_unmatched_path, :continue)
       }
     end
@@ -70,11 +70,11 @@ if Code.ensure_loaded?(Plug) do
     @impl Plug
     def call(%Conn{request_path: metrics_path, method: "GET"} = conn, %{
           metrics_path: metrics_path,
-          peep_worker: peep_worker
+          ogle_worker: ogle_worker
         }) do
       metrics =
-        Peep.get_all_metrics(peep_worker)
-        |> Peep.Prometheus.export()
+        Ogle.get_all_metrics(ogle_worker)
+        |> Ogle.Prometheus.export()
 
       conn
       |> put_resp_content_type("text/plain")

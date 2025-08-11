@@ -1,11 +1,11 @@
-defmodule Peep.MixProject do
+defmodule Ogle.MixProject do
   use Mix.Project
 
-  @version "4.0.0"
+  @version "1.0.0"
 
   def project do
     [
-      app: :peep,
+      app: :ogle,
       version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
@@ -56,14 +56,14 @@ defmodule Peep.MixProject do
 
   defp docs do
     [
-      main: "Peep",
-      canonical: "http://hexdocs.pm/peep",
-      source_url: "https://github.com/rkallos/peep",
+      main: "Ogle",
+      canonical: "http://hexdocs.pm/ogle",
+      source_url: "https://github.com/hauleth/ogle",
       source_ref: "v#{@version}",
       extras: [],
       groups_for_modules: [
-        Storage: [~r/Peep.Storage/],
-        Bucketing: [~r/Peep.Buckets/]
+        Storage: [~r/Ogle.Storage/],
+        Bucketing: [~r/Ogle.Buckets/]
       ]
     ]
   end
@@ -76,9 +76,9 @@ defmodule Peep.MixProject do
 
   defp package do
     [
-      maintainers: ["Richard Kallos", "Fabien Lamarche-Filion"],
+      maintainers: ["Łukasz Niemier"],
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/rkallos/peep"}
+      links: %{"GitHub" => "https://github.com/hauleth/ogle"}
     ]
   end
 end

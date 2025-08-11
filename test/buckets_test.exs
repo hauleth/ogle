@@ -2,7 +2,7 @@ defmodule BucketsTest do
   use ExUnit.Case
 
   defmodule CustomBuckets do
-    use Peep.Buckets.Custom, buckets: [3.14, 3.5, 4, 8, 15, 16, 23, 42, 50.5, 60]
+    use Ogle.Buckets.Custom, buckets: [3.14, 3.5, 4, 8, 15, 16, 23, 42, 50.5, 60]
   end
 
   alias Telemetry.Metrics
@@ -13,7 +13,7 @@ defmodule BucketsTest do
         description: "a distribution",
         reporter_options: [
           max_value: 1000,
-          peep_bucket_calculator: CustomBuckets
+          ogle_bucket_calculator: CustomBuckets
         ]
       )
 
@@ -54,22 +54,22 @@ defmodule BucketsTest do
     assert CustomBuckets.upper_bound(1_000, config) == "+Inf"
   end
 
-  test "passing a non-number to `use Peep.Buckets.Custom` fails to compile" do
+  test "passing a non-number to `use Ogle.Buckets.Custom` fails to compile" do
     ast =
       quote do
         defmodule BadBuckets do
-          use Peep.Buckets.Custom, buckets: [1, 2, 3, :four, 5]
+          use Ogle.Buckets.Custom, buckets: [1, 2, 3, :four, 5]
         end
       end
 
     assert_raise ArgumentError, fn -> Code.compile_quoted(ast) end
   end
 
-  test "buckets passed to `Peep.Buckets.Custom` can be values to be computed" do
+  test "buckets passed to `Ogle.Buckets.Custom` can be values to be computed" do
     ast =
       quote do
         defmodule CompTimeValues do
-          use Peep.Buckets.Custom,
+          use Ogle.Buckets.Custom,
             buckets: [
               :timer.seconds(1),
               :timer.seconds(2),
@@ -85,7 +85,7 @@ defmodule BucketsTest do
     ast =
       quote do
         defmodule CompTimeList do
-          use Peep.Buckets.Custom,
+          use Ogle.Buckets.Custom,
             buckets: Enum.map(1..10, &:timer.seconds/1)
         end
       end
@@ -99,7 +99,7 @@ defmodule BucketsTest do
         defmodule VariableList do
           buckets = Enum.map(1..10, &:timer.seconds/1)
 
-          use Peep.Buckets.Custom,
+          use Ogle.Buckets.Custom,
             buckets: buckets
         end
       end
@@ -107,11 +107,11 @@ defmodule BucketsTest do
     assert Code.compile_quoted(ast)
   end
 
-  test "buckets passed to `use Peep.Buckets.Custom` are deduplicated" do
+  test "buckets passed to `use Ogle.Buckets.Custom` are deduplicated" do
     [{module, _binary}] =
       quote do
         defmodule DupeBuckets do
-          use Peep.Buckets.Custom, buckets: [1, 1, 1.0, 2, 2.0, 3]
+          use Ogle.Buckets.Custom, buckets: [1, 1, 1.0, 2, 2.0, 3]
         end
       end
       |> Code.compile_quoted()

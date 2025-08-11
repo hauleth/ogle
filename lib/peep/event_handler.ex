@@ -1,11 +1,11 @@
-defmodule Peep.EventHandler do
+defmodule Ogle.EventHandler do
   @moduledoc false
 
   @compile :inline
 
   def attach(name) do
-    %Peep.Persistent{events_to_metrics: metrics_by_event} = Peep.Persistent.fetch(name)
-    module = Peep.Codegen.module(name)
+    %Ogle.Persistent{events_to_metrics: metrics_by_event} = Ogle.Persistent.fetch(name)
+    module = Ogle.Codegen.module(name)
 
     for {event_name, _metrics} <- metrics_by_event do
       handler_id = handler_id(event_name, name)
@@ -27,7 +27,7 @@ defmodule Peep.EventHandler do
     :ok
   end
 
-  defp handler_id(event_name, peep_name) do
-    {__MODULE__, peep_name, event_name}
+  defp handler_id(event_name, ogle_name) do
+    {__MODULE__, ogle_name, event_name}
   end
 end

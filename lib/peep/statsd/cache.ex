@@ -1,4 +1,4 @@
-defmodule Peep.Statsd.Cache do
+defmodule Ogle.Statsd.Cache do
   @moduledoc false
   alias Telemetry.Metrics.{Counter, Distribution, LastValue, Sum}
 

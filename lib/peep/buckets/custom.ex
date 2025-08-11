@@ -1,16 +1,16 @@
-defmodule Peep.Buckets.Custom do
+defmodule Ogle.Buckets.Custom do
   @moduledoc """
-  A helper module for writing modules that implement the `Peep.Buckets`
+  A helper module for writing modules that implement the `Ogle.Buckets`
   behavior, with custom bucket boundaries.
 
-  For an example, look at the source of `Peep.Buckets.PowersOfTen`.
+  For an example, look at the source of `Ogle.Buckets.PowersOfTen`.
   """
 
   defmacro __using__(opts) do
     quote bind_quoted: [buckets: Keyword.fetch!(opts, :buckets)] do
-      @behaviour Peep.Buckets
+      @behaviour Ogle.Buckets
 
-      require Peep.Buckets.Custom
+      require Ogle.Buckets.Custom
 
       buckets = :lists.usort(buckets)
       len = length(buckets)
@@ -53,11 +53,11 @@ defmodule Peep.Buckets.Custom do
       else
         # For larger lists binary search still wins
         def bucket_for(val, _) when is_integer(val) do
-          Peep.Buckets.Custom.build_tree(unquote(int_buckets), unquote(len), val)
+          Ogle.Buckets.Custom.build_tree(unquote(int_buckets), unquote(len), val)
         end
 
         def bucket_for(val, _) when is_float(val) do
-          Peep.Buckets.Custom.build_tree(unquote(float_buckets), unquote(len), val)
+          Ogle.Buckets.Custom.build_tree(unquote(float_buckets), unquote(len), val)
         end
       end
 

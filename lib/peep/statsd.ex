@@ -1,9 +1,9 @@
-defmodule Peep.Statsd do
+defmodule Ogle.Statsd do
   @moduledoc false
   require Logger
 
-  alias Peep.Statsd.{Cache, Packet}
-  alias Peep.Telemetry
+  alias Ogle.Statsd.{Cache, Packet}
+  alias Ogle.Telemetry
 
   defstruct prev: Cache.new([]), statsd_opts: %{}, socket: nil
 

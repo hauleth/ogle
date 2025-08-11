@@ -1,4 +1,4 @@
-defmodule Peep.Statsd.Packet do
+defmodule Ogle.Statsd.Packet do
   @moduledoc false
   alias __MODULE__
 

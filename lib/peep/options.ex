@@ -1,4 +1,4 @@
-defmodule Peep.Options do
+defmodule Ogle.Options do
   @statsd_opts_schema [
     flush_interval_ms: [
       type: :non_neg_integer,
@@ -40,7 +40,7 @@ defmodule Peep.Options do
     name: [
       type: :atom,
       required: true,
-      doc: "A name for the Peep worker process"
+      doc: "A name for the Ogle worker process"
     ],
     metrics: [
       type: {:list, :any},
@@ -72,7 +72,7 @@ defmodule Peep.Options do
   ]
 
   @moduledoc """
-  Options for a `Peep` reporter. Validated with `NimbleOptions`.
+  Options for a `Ogle` reporter. Validated with `NimbleOptions`.
 
   #{NimbleOptions.docs(@schema, nest_level: 0)}
   """

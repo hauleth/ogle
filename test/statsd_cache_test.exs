@@ -1,10 +1,10 @@
 defmodule StatsdCacheTest do
   use ExUnit.Case
 
-  alias Peep.Statsd.Cache
+  alias Ogle.Statsd.Cache
   alias Telemetry.Metrics
 
-  alias Peep.Support.StorageCounter
+  alias Ogle.Support.StorageCounter
 
   @impls [:default, :striped]
 
@@ -20,9 +20,9 @@ defmodule StatsdCacheTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
-      Peep.insert_metric(name, counter, 1, %{})
+      Ogle.insert_metric(name, counter, 1, %{})
 
       {delta_one, cache_one} = calculate_deltas_and_replacement(cache_of(name), Cache.new([]))
 
@@ -32,7 +32,7 @@ defmodule StatsdCacheTest do
 
       assert Map.values(delta_two) == []
 
-      Peep.insert_metric(name, counter, 1, %{})
+      Ogle.insert_metric(name, counter, 1, %{})
       {delta_three, _cache_three} = calculate_deltas_and_replacement(cache_of(name), cache_two)
 
       assert Map.values(delta_three) == [1]
@@ -49,9 +49,9 @@ defmodule StatsdCacheTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
-      Peep.insert_metric(name, sum, 10, %{})
+      Ogle.insert_metric(name, sum, 10, %{})
 
       {delta_one, cache_one} = calculate_deltas_and_replacement(cache_of(name), Cache.new([]))
 
@@ -61,7 +61,7 @@ defmodule StatsdCacheTest do
 
       assert Map.values(delta_two) == []
 
-      Peep.insert_metric(name, sum, 10, %{})
+      Ogle.insert_metric(name, sum, 10, %{})
       {delta_three, _cache_three} = calculate_deltas_and_replacement(cache_of(name), cache_two)
 
       assert Map.values(delta_three) == [10]
@@ -78,11 +78,11 @@ defmodule StatsdCacheTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
-      Peep.insert_metric(name, dist, 500, %{})
-      Peep.insert_metric(name, dist, 500, %{})
-      Peep.insert_metric(name, dist, 500, %{})
+      Ogle.insert_metric(name, dist, 500, %{})
+      Ogle.insert_metric(name, dist, 500, %{})
+      Ogle.insert_metric(name, dist, 500, %{})
 
       {delta_one, cache_one} = calculate_deltas_and_replacement(cache_of(name), Cache.new([]))
 
@@ -92,9 +92,9 @@ defmodule StatsdCacheTest do
 
       assert Map.values(delta_two) == []
 
-      Peep.insert_metric(name, dist, 500, %{})
-      Peep.insert_metric(name, dist, 500, %{})
-      Peep.insert_metric(name, dist, 1000, %{})
+      Ogle.insert_metric(name, dist, 500, %{})
+      Ogle.insert_metric(name, dist, 500, %{})
+      Ogle.insert_metric(name, dist, 1000, %{})
       {delta_three, _cache_three} = calculate_deltas_and_replacement(cache_of(name), cache_two)
 
       assert Map.values(delta_three) |> Enum.sort() == [1, 2]
@@ -111,9 +111,9 @@ defmodule StatsdCacheTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
-      Peep.insert_metric(name, last_value, 10, %{})
+      Ogle.insert_metric(name, last_value, 10, %{})
 
       {delta_one, cache_one} = calculate_deltas_and_replacement(cache_of(name), Cache.new([]))
 
@@ -126,7 +126,7 @@ defmodule StatsdCacheTest do
   end
 
   defp cache_of(name) do
-    Peep.get_all_metrics(name)
+    Ogle.get_all_metrics(name)
     |> Cache.new()
   end
 

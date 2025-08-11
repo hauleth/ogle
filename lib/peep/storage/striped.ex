@@ -1,14 +1,14 @@
-defmodule Peep.Storage.Striped do
+defmodule Ogle.Storage.Striped do
   @moduledoc """
-  Peep.Storage implementation using an ETS table per BEAM scheduler thread.
+  Ogle.Storage implementation using an ETS table per BEAM scheduler thread.
 
-  Offers less lock contention than `Peep.Storage.ETS`, at the cost of higher
+  Offers less lock contention than `Ogle.Storage.ETS`, at the cost of higher
   memory usage. Recommended when executing thousands of metrics per second.
   """
   alias Telemetry.Metrics
-  alias Peep.Storage
+  alias Ogle.Storage
 
-  @behaviour Peep.Storage
+  @behaviour Ogle.Storage
 
   @typep tids() :: %{pos_integer() => :ets.tid()}
 
@@ -187,7 +187,7 @@ defmodule Peep.Storage.Striped do
   end
 
   @impl true
-  def get_all_metrics(tids, %Peep.Persistent{ids_to_metrics: itm}) do
+  def get_all_metrics(tids, %Ogle.Persistent{ids_to_metrics: itm}) do
     acc = get_all_metrics2(Tuple.to_list(tids), itm, %{})
     remove_timestamps_from_last_values(acc)
   end

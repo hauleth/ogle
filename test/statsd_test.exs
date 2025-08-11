@@ -1,10 +1,10 @@
 defmodule StatsdTest do
   use ExUnit.Case
 
-  alias Peep.Statsd
+  alias Ogle.Statsd
   alias Telemetry.Metrics
 
-  alias Peep.Support.StorageCounter
+  alias Ogle.Support.StorageCounter
 
   @impls [:default, :striped]
 
@@ -20,13 +20,13 @@ defmodule StatsdTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       for i <- 1..10 do
-        Peep.insert_metric(name, counter, 1, %{})
+        Ogle.insert_metric(name, counter, 1, %{})
 
         if rem(i, 2) == 0 do
-          Peep.insert_metric(name, counter, 1, %{even: true})
+          Ogle.insert_metric(name, counter, 1, %{even: true})
         end
       end
 
@@ -45,13 +45,13 @@ defmodule StatsdTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       for i <- 1..10 do
-        Peep.insert_metric(name, sum, 1, %{})
+        Ogle.insert_metric(name, sum, 1, %{})
 
         if rem(i, 2) == 0 do
-          Peep.insert_metric(name, sum, 1, %{even: true})
+          Ogle.insert_metric(name, sum, 1, %{even: true})
         end
       end
 
@@ -70,13 +70,13 @@ defmodule StatsdTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       for i <- 1..10 do
-        Peep.insert_metric(name, last_value, i, %{})
+        Ogle.insert_metric(name, last_value, i, %{})
 
         if rem(i, 2) == 1 do
-          Peep.insert_metric(name, last_value, i, %{odd: true})
+          Ogle.insert_metric(name, last_value, i, %{odd: true})
         end
       end
 
@@ -95,13 +95,13 @@ defmodule StatsdTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       for i <- 1..1000 do
-        Peep.insert_metric(name, dist, i, %{})
+        Ogle.insert_metric(name, dist, i, %{})
 
         if rem(i, 100) == 0 do
-          Peep.insert_metric(name, dist, i, %{foo: :bar})
+          Ogle.insert_metric(name, dist, i, %{foo: :bar})
         end
       end
 
@@ -165,13 +165,13 @@ defmodule StatsdTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       for i <- 1..1000 do
-        Peep.insert_metric(name, dist, i, %{})
+        Ogle.insert_metric(name, dist, i, %{})
 
         if rem(i, 100) == 0 do
-          Peep.insert_metric(name, dist, i, %{foo: :bar})
+          Ogle.insert_metric(name, dist, i, %{foo: :bar})
         end
       end
 
@@ -240,15 +240,15 @@ defmodule StatsdTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       for i <- 1..10 do
         sum = sum.(i)
         last_value = last_value.(i)
 
         for j <- 1..10 do
-          Peep.insert_metric(name, sum, j, %{})
-          Peep.insert_metric(name, last_value, j, %{})
+          Ogle.insert_metric(name, sum, j, %{})
+          Ogle.insert_metric(name, last_value, j, %{})
         end
       end
 
@@ -302,7 +302,7 @@ defmodule StatsdTest do
     state = Statsd.make_state(%{formatter: formatter, mtu: mtu})
 
     {_cache, packets} =
-      Peep.get_all_metrics(name)
+      Ogle.get_all_metrics(name)
       |> Statsd.prepare(state)
 
     for p <- packets do

@@ -1,8 +1,8 @@
-defmodule PeepTest do
+defmodule OgleTest do
   use ExUnit.Case
   import ExUnit.CaptureLog
 
-  doctest Peep
+  doctest Ogle
 
   alias Telemetry.Metrics
 
@@ -12,7 +12,7 @@ defmodule PeepTest do
       metrics: []
     ]
 
-    assert {:ok, pid} = Peep.start_link(options)
+    assert {:ok, pid} = Ogle.start_link(options)
     assert Process.alive?(pid)
   end
 
@@ -23,7 +23,7 @@ defmodule PeepTest do
         metrics: []
       ]
 
-      assert {:ok, pid} = Peep.start_link(options)
+      assert {:ok, pid} = Ogle.start_link(options)
       assert Process.alive?(pid)
     end
   end
@@ -34,7 +34,7 @@ defmodule PeepTest do
       metrics: []
     ]
 
-    assert {:ok, pid} = Peep.start_link(options)
+    assert {:ok, pid} = Ogle.start_link(options)
     assert match?(%{statsd_state: nil}, :sys.get_state(pid))
   end
 
@@ -44,14 +44,14 @@ defmodule PeepTest do
     tags = %{foo: "bar", baz: "quux", service: "my-app", env: "production"}
     tag_keys = [:foo, :baz]
 
-    counter = Metrics.counter("peep.counter", event_name: [:counter], tags: tag_keys)
-    sum = Metrics.sum("peep.sum", event_name: [:sum], measurement: :count, tags: tag_keys)
+    counter = Metrics.counter("ogle.counter", event_name: [:counter], tags: tag_keys)
+    sum = Metrics.sum("ogle.sum", event_name: [:sum], measurement: :count, tags: tag_keys)
 
     last_value =
-      Metrics.last_value("peep.gauge", event_name: [:gauge], measurement: :value, tags: tag_keys)
+      Metrics.last_value("ogle.gauge", event_name: [:gauge], measurement: :value, tags: tag_keys)
 
     distribution =
-      Metrics.distribution("peep.dist",
+      Metrics.distribution("ogle.dist",
         event_name: [:dist],
         measurement: :value,
         tags: tag_keys,
@@ -66,34 +66,34 @@ defmodule PeepTest do
       global_tags: tags
     ]
 
-    assert {:ok, _pid} = Peep.start_link(options)
+    assert {:ok, _pid} = Ogle.start_link(options)
     :telemetry.execute([:counter], %{})
     :telemetry.execute([:sum], %{count: 5})
     :telemetry.execute([:gauge], %{value: 10})
     :telemetry.execute([:dist], %{value: 15})
 
-    assert Peep.get_metric(name, counter, tags) == 1
-    assert Peep.get_metric(name, sum, tags) == 5
-    assert Peep.get_metric(name, last_value, tags) == 10
-    assert Peep.get_metric(name, distribution, tags).sum == 15
+    assert Ogle.get_metric(name, counter, tags) == 1
+    assert Ogle.get_metric(name, sum, tags) == 5
+    assert Ogle.get_metric(name, last_value, tags) == 10
+    assert Ogle.get_metric(name, distribution, tags).sum == 15
   end
 
-  test "Peep process name can be used with Peep.Storage" do
+  test "Ogle process name can be used with Ogle.Storage" do
     name = :"#{__MODULE__}_storage"
 
     options = [
       name: name,
       metrics: [
-        Metrics.counter("another.peep.counter", event_name: [:another, :counter]),
-        Metrics.sum("another.peep.sum", event_name: [:another, :sum], measurement: :count)
+        Metrics.counter("another.ogle.counter", event_name: [:another, :counter]),
+        Metrics.sum("another.ogle.sum", event_name: [:another, :sum], measurement: :count)
       ]
     ]
 
-    {:ok, _pid} = Peep.start_link(options)
+    {:ok, _pid} = Ogle.start_link(options)
 
     :telemetry.execute([:another, :counter], %{})
     :telemetry.execute([:another, :sum], %{count: 10})
-    assert %{} = Peep.get_all_metrics(name)
+    assert %{} = Ogle.get_all_metrics(name)
   end
 
   test "Summary metrics are dropped" do
@@ -102,25 +102,25 @@ defmodule PeepTest do
     options = [
       name: name,
       metrics: [
-        Metrics.summary("peep.summary"),
-        Metrics.summary("another.peep.summary")
+        Metrics.summary("ogle.summary"),
+        Metrics.summary("another.ogle.summary")
       ]
     ]
 
     logs =
       capture_log(fn ->
-        {:ok, _pid} = Peep.start_link(options)
+        {:ok, _pid} = Ogle.start_link(options)
       end)
 
-    assert %{} == Peep.get_all_metrics(name)
+    assert %{} == Ogle.get_all_metrics(name)
 
-    for event_name <- [[:peep, :summary], [:another, :peep, :summary]] do
+    for event_name <- [[:ogle, :summary], [:another, :ogle, :summary]] do
       assert String.contains?(logs, "Dropping #{inspect(event_name)}")
     end
   end
 
   test "Handlers are detached on shutdown" do
-    prefix = [:peep, :shutdown_test]
+    prefix = [:ogle, :shutdown_test]
 
     metric =
       Metrics.counter(prefix ++ [:counter])
@@ -130,9 +130,9 @@ defmodule PeepTest do
         name: :"#{__MODULE__}_shutdown_test",
         metrics: [metric]
       ]
-      |> Peep.Options.validate()
+      |> Ogle.Options.validate()
 
-    {:ok, pid} = GenServer.start(Peep, options, name: options.name)
+    {:ok, pid} = GenServer.start(Ogle, options, name: options.name)
 
     assert length(:telemetry.list_handlers(prefix)) == 1
 
@@ -163,7 +163,7 @@ defmodule PeepTest do
       events_to_metrics: actual_by_event,
       ids_to_metrics: actual_by_id,
       metrics_to_ids: actual_by_metric
-    } = Peep.assign_metric_ids(metrics)
+    } = Ogle.assign_metric_ids(metrics)
 
     assert actual_by_event == expected_by_event
     assert actual_by_id == expected_by_id
@@ -195,14 +195,14 @@ defmodule PeepTest do
       metrics: metrics
     ]
 
-    {:ok, _pid} = Peep.start_link(options)
+    {:ok, _pid} = Ogle.start_link(options)
 
     :telemetry.execute([name, :sum], %{value: :foo})
     :telemetry.execute([name, :last_value], %{value: "bar"})
     :telemetry.execute([name, :dist], %{value: []})
 
-    assert Peep.get_metric(name, sum, []) == 0
-    assert Peep.get_metric(name, last_value, []) == nil
-    assert Peep.get_metric(name, dist, []) == nil
+    assert Ogle.get_metric(name, sum, []) == 0
+    assert Ogle.get_metric(name, last_value, []) == nil
+    assert Ogle.get_metric(name, dist, []) == nil
   end
 end

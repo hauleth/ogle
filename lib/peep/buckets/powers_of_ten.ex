@@ -1,9 +1,9 @@
-defmodule Peep.Buckets.PowersOfTen do
+defmodule Ogle.Buckets.PowersOfTen do
   @moduledoc """
-  An implementation of `Peep.Buckets`, using `Peep.Buckets.Custom`.
+  An implementation of `Ogle.Buckets`, using `Ogle.Buckets.Custom`.
   """
 
-  use Peep.Buckets.Custom,
+  use Ogle.Buckets.Custom,
     buckets: [
       10,
       100,

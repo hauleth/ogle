@@ -1,4 +1,4 @@
-defmodule Peep.Storage.Atomics do
+defmodule Ogle.Storage.Atomics do
   @moduledoc false
 
   defstruct [
@@ -10,7 +10,7 @@ defmodule Peep.Storage.Atomics do
   ]
 
   def new(%Telemetry.Metrics.Distribution{} = metric) do
-    {bucket_calculator, config} = Peep.Buckets.config(metric)
+    {bucket_calculator, config} = Ogle.Buckets.config(metric)
     num_buckets = bucket_calculator.number_of_buckets(config)
     buckets = :atomics.new(num_buckets, signed: false)
     sum = :atomics.new(1, signed: true)

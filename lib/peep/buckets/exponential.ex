@@ -1,9 +1,9 @@
-defmodule Peep.Buckets.Exponential do
+defmodule Ogle.Buckets.Exponential do
   @default_max_value 1_000_000_000
   @default_bucket_variability 0.10
 
   @moduledoc """
-  The default bucketing strategy in Peep, based on the logarithmic bucketing
+  The default bucketing strategy in Ogle, based on the logarithmic bucketing
   scheme in the DDSketch paper.
 
   This bucketing scheme takes two parameters:
@@ -13,7 +13,7 @@ defmodule Peep.Buckets.Exponential do
   which bucket ranges should grow. Defaults to #{@default_bucket_variability}.
   """
 
-  @behaviour Peep.Buckets
+  @behaviour Ogle.Buckets
 
   alias Telemetry.Metrics
 

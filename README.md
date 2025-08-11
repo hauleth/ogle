@@ -1,29 +1,29 @@
-# Peep
+# Ogle
 
-[![Hex version badge](https://img.shields.io/hexpm/v/peep)](https://hex.pm/packages/peep)
-[![Hexdocs badge](https://img.shields.io/static/v1?message=hexdocs&label=&color=B1A5EE)](https://hexdocs.pm/peep)
-[![Elixir CI badge](https://github.com/rkallos/peep/actions/workflows/elixir.yml/badge.svg)](https://github.com/rkallos/peep/actions/workflows/elixir.yml)
-[![Hex licence badge](https://img.shields.io/hexpm/l/peep)](./LICENSE)
+[![Hex version badge](https://img.shields.io/hexpm/v/ogle)](https://hex.pm/packages/ogle)
+[![Hexdocs badge](https://img.shields.io/static/v1?message=hexdocs&label=&color=B1A5EE)](https://hexdocs.pm/ogle)
+[![Elixir CI badge](https://github.com/hauleth/ogle/actions/workflows/elixir.yml/badge.svg)](https://github.com/hauleth/ogle/actions/workflows/elixir.yml)
+[![Hex licence badge](https://img.shields.io/hexpm/l/ogle)](./LICENSE)
 
 `Telemetry.Metrics` reporter for Prometheus and StatsD (including Datadog).
 
-Peep has some important differences from libraries like
+Ogle has some important differences from libraries like
 `TelemetryMetricsPrometheus.Core` and `TelemetryMetricsStatsd`:
 
-- Instead of sampling or on-demand aggregation of samples, Peep estimates
+- Instead of sampling or on-demand aggregation of samples, Ogle estimates
   distributions using histograms.
-- Instead of sending one datagram per telemetry event, Peep's StatsD reporting
+- Instead of sending one datagram per telemetry event, Ogle's StatsD reporting
   runs periodically, batching all lines into the smallest number of datagram
   packets possible while still obeying the configured `:mtu` setting.
 
 To use it, start a reporter with `start_link/1`, providing a keyword list of
-options (see `Peep.Options` for the schema against which options are validated).
+options (see `Ogle.Options` for the schema against which options are validated).
 
 ```elixir
 import Telemetry.Metrics
 
-Peep.start_link(
-  name: MyPeep,
+Ogle.start_link(
+  name: MyOgle,
   metrics: [
     counter("http.request.count"),
     sum("http.request.payload_size"),
@@ -38,8 +38,8 @@ or put it under a supervisor:
 import Telemetry.Metrics
 
 children = [
-  {Peep, [
-    name: MyPeep,
+  {Ogle, [
+    name: MyOgle,
     metrics: [
       counter("http.request.count"),
       sum("http.request.payload_size"),
@@ -51,28 +51,28 @@ children = [
 Supervisor.start_link(children, ...)
 ```
 
-By default, Peep does not emit StatsD data. It can be enabled by passing in
-configuration with the `statsd` keyword. Peep's StatsD reporting supports Unix
+By default, Ogle does not emit StatsD data. It can be enabled by passing in
+configuration with the `statsd` keyword. Ogle's StatsD reporting supports Unix
 Domain Sockets.
 
 ## What's Missing
 
 Currently, there's no implementation of 'summary' metrics. Since histograms are
-relatively inexpensive in Peep, we suggest you use 'distribution' metrics
+relatively inexpensive in Ogle, we suggest you use 'distribution' metrics
 instead.
 
 ## Installation
 
-Peep package can be installed by adding `peep` to your list of dependencies in `mix.exs`:
+Ogle package can be installed by adding `ogle` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:peep, "~> 3.3"}
+    {:ogle, "~> 3.3"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/peep>.
+be found at <https://hexdocs.pm/ogle>.

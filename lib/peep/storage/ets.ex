@@ -1,16 +1,16 @@
-defmodule Peep.Storage.ETS do
+defmodule Ogle.Storage.ETS do
   @moduledoc """
-  Peep.Storage implementation using a single ETS table.
+  Ogle.Storage implementation using a single ETS table.
 
-  A sane default for storing Peep metrics, with some simple optimizations.
-  If you discover that lock contention on Peep's ETS table is high,
-  consider switching to `Peep.Storage.Striped`, which reduces lock contention
+  A sane default for storing Ogle metrics, with some simple optimizations.
+  If you discover that lock contention on Ogle's ETS table is high,
+  consider switching to `Ogle.Storage.Striped`, which reduces lock contention
   at the cost of higher memory usage.
   """
-  alias Peep.Storage
+  alias Ogle.Storage
   alias Telemetry.Metrics
 
-  @behaviour Peep.Storage
+  @behaviour Ogle.Storage
 
   @spec new() :: :ets.tid()
   @impl true
@@ -81,7 +81,7 @@ defmodule Peep.Storage.ETS do
   end
 
   @impl true
-  def get_all_metrics(tid, %Peep.Persistent{ids_to_metrics: itm}) do
+  def get_all_metrics(tid, %Ogle.Persistent{ids_to_metrics: itm}) do
     :ets.tab2list(tid)
     |> group_metrics(itm, %{})
   end

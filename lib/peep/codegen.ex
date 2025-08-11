@@ -1,15 +1,15 @@
-defmodule Peep.Codegen do
+defmodule Ogle.Codegen do
   @moduledoc false
 
-  alias Peep.Options
-  alias Peep.Persistent
+  alias Ogle.Options
+  alias Ogle.Persistent
 
-  def module(peep_name) do
-    :"Peep.Codegen.#{peep_name}"
+  def module(ogle_name) do
+    :"Ogle.Codegen.#{ogle_name}"
   end
 
-  def create(%Options{} = peep_options) do
-    %Options{name: name, global_tags: global_tags} = peep_options
+  def create(%Options{} = ogle_options) do
+    %Options{name: name, global_tags: global_tags} = ogle_options
 
     module_name = module(name)
     handle_event_ast = build_handle_event_ast(name)
@@ -34,11 +34,11 @@ defmodule Peep.Codegen do
     :ok
   end
 
-  def purge(peep_name) do
-    :code.purge(module(peep_name))
+  def purge(ogle_name) do
+    :code.purge(module(ogle_name))
   end
 
-  defp build_handle_event_ast(peep_name) do
+  defp build_handle_event_ast(ogle_name) do
     quote do
       def handle_event(event, measurements, metadata, _) do
         global_tags = global_tags()
@@ -46,7 +46,7 @@ defmodule Peep.Codegen do
         %Persistent{
           events_to_metrics: %{^event => metrics},
           storage: {storage_mod, storage}
-        } = Persistent.fast_fetch(unquote(peep_name))
+        } = Persistent.fast_fetch(unquote(ogle_name))
 
         :lists.foreach(
           fn {metric, id} ->

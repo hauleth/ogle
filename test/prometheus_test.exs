@@ -1,10 +1,10 @@
 defmodule PrometheusTest do
   use ExUnit.Case, async: true
 
-  alias Peep.Prometheus
+  alias Ogle.Prometheus
   alias Telemetry.Metrics
 
-  alias Peep.Support.StorageCounter
+  alias Ogle.Support.StorageCounter
 
   @impls [:default, :striped]
 
@@ -19,9 +19,9 @@ defmodule PrometheusTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
-      Peep.insert_metric(name, counter, 1, %{foo: :bar, baz: "quux"})
+      Ogle.insert_metric(name, counter, 1, %{foo: :bar, baz: "quux"})
 
       expected = [
         "# HELP prometheus_test_counter a counter",
@@ -43,10 +43,10 @@ defmodule PrometheusTest do
           storage: unquote(impl)
         ]
 
-        {:ok, _pid} = Peep.start_link(opts)
+        {:ok, _pid} = Ogle.start_link(opts)
 
-        Peep.insert_metric(name, sum, 5, %{foo: :bar, baz: "quux"})
-        Peep.insert_metric(name, sum, 3, %{foo: :bar, baz: "quux"})
+        Ogle.insert_metric(name, sum, 5, %{foo: :bar, baz: "quux"})
+        Ogle.insert_metric(name, sum, 3, %{foo: :bar, baz: "quux"})
 
         expected = [
           "# HELP prometheus_test_sum a sum",
@@ -72,10 +72,10 @@ defmodule PrometheusTest do
           storage: unquote(impl)
         ]
 
-        {:ok, _pid} = Peep.start_link(opts)
+        {:ok, _pid} = Ogle.start_link(opts)
 
-        Peep.insert_metric(name, sum, 5, %{foo: :bar, baz: "quux"})
-        Peep.insert_metric(name, sum, 3, %{foo: :bar, baz: "quux"})
+        Ogle.insert_metric(name, sum, 5, %{foo: :bar, baz: "quux"})
+        Ogle.insert_metric(name, sum, 3, %{foo: :bar, baz: "quux"})
 
         expected = [
           "# HELP prometheus_test_sum a sum",
@@ -98,9 +98,9 @@ defmodule PrometheusTest do
           storage: unquote(impl)
         ]
 
-        {:ok, _pid} = Peep.start_link(opts)
+        {:ok, _pid} = Ogle.start_link(opts)
 
-        Peep.insert_metric(name, last_value, 5, %{blee: :bloo, flee: "floo"})
+        Ogle.insert_metric(name, last_value, 5, %{blee: :bloo, flee: "floo"})
 
         expected = [
           "# HELP prometheus_test_gauge a last_value",
@@ -126,9 +126,9 @@ defmodule PrometheusTest do
           storage: unquote(impl)
         ]
 
-        {:ok, _pid} = Peep.start_link(opts)
+        {:ok, _pid} = Ogle.start_link(opts)
 
-        Peep.insert_metric(name, last_value, 5, %{blee: :bloo, flee: "floo"})
+        Ogle.insert_metric(name, last_value, 5, %{blee: :bloo, flee: "floo"})
 
         expected = [
           "# HELP prometheus_test_gauge a last_value",
@@ -155,12 +155,12 @@ defmodule PrometheusTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       expected = []
       assert export(name) == lines_to_string(expected)
 
-      Peep.insert_metric(name, dist, 1, %{glee: :gloo})
+      Ogle.insert_metric(name, dist, 1, %{glee: :gloo})
 
       expected = [
         "# HELP prometheus_test_distribution a distribution",
@@ -209,7 +209,7 @@ defmodule PrometheusTest do
       assert export(name) == lines_to_string(expected)
 
       for i <- 2..2000 do
-        Peep.insert_metric(name, dist, i, %{glee: :gloo})
+        Ogle.insert_metric(name, dist, i, %{glee: :gloo})
       end
 
       expected = [
@@ -267,7 +267,7 @@ defmodule PrometheusTest do
           description: "a distribution",
           reporter_options: [
             max_value: 1000,
-            peep_bucket_calculator: Peep.Buckets.PowersOfTen
+            ogle_bucket_calculator: Ogle.Buckets.PowersOfTen
           ]
         )
 
@@ -277,12 +277,12 @@ defmodule PrometheusTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
       expected = []
       assert export(name) == lines_to_string(expected)
 
-      Peep.insert_metric(name, dist, 1, %{glee: :gloo})
+      Ogle.insert_metric(name, dist, 1, %{glee: :gloo})
 
       expected = [
         "# HELP prometheus_test_distribution a distribution",
@@ -305,7 +305,7 @@ defmodule PrometheusTest do
 
       f = fn ->
         for i <- 1..2000 do
-          Peep.insert_metric(name, dist, i, %{glee: :gloo})
+          Ogle.insert_metric(name, dist, i, %{glee: :gloo})
         end
       end
 
@@ -347,12 +347,12 @@ defmodule PrometheusTest do
         storage: unquote(impl)
       ]
 
-      {:ok, _pid} = Peep.start_link(opts)
+      {:ok, _pid} = Ogle.start_link(opts)
 
-      Peep.insert_metric(name, counter, 1, %{atom: "\"string\""})
-      Peep.insert_metric(name, counter, 1, %{"\"string\"" => :atom})
-      Peep.insert_metric(name, counter, 1, %{"\"string\"" => "\"string\""})
-      Peep.insert_metric(name, counter, 1, %{"string" => "string\n"})
+      Ogle.insert_metric(name, counter, 1, %{atom: "\"string\""})
+      Ogle.insert_metric(name, counter, 1, %{"\"string\"" => :atom})
+      Ogle.insert_metric(name, counter, 1, %{"\"string\"" => "\"string\""})
+      Ogle.insert_metric(name, counter, 1, %{"string" => "string\n"})
 
       expected = [
         "# HELP prometheus_test_counter a counter",
@@ -368,7 +368,7 @@ defmodule PrometheusTest do
   end
 
   defp export(name) do
-    Peep.get_all_metrics(name)
+    Ogle.get_all_metrics(name)
     |> Prometheus.export()
     |> IO.iodata_to_binary()
   end

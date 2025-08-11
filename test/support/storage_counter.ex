@@ -1,4 +1,4 @@
-defmodule Peep.Support.StorageCounter do
+defmodule Ogle.Support.StorageCounter do
   @moduledoc false
   use Agent
 
