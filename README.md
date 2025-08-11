@@ -68,7 +68,7 @@ Ogle package can be installed by adding `ogle` to your list of dependencies in `
 ```elixir
 def deps do
   [
-    {:ogle, "~> 3.3"}
+    {:ogle, "~> 1.0"}
   ]
 end
 ```
